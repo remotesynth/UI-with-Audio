@@ -1,0 +1,37 @@
+<html>
+<head>
+    <title>Notifications</title>
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.default.min.css" rel="stylesheet">
+</head>
+<body>
+<span id="popupNotification" style="display:none"></span>
+<button id="show">Show Notification</button>
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="http://cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
+<script src="js/blip.js"></script>
+<script>
+var ping,
+    popupNotification = $("#popupNotification").kendoNotification({show: onPopup}).data("kendoNotification"),
+    show = $('#show').kendoButton({enable: false, click: showPopup}).data("kendoButton");
+
+blip.sampleLoader()
+    .samples({
+        'ping': 'audio/ping.wav'
+    })
+    .done(audioLoaded)
+    .load();
+function audioLoaded() {
+    ping = blip.clip().sample('ping');
+    show.enable(true);
+}
+function showPopup() {
+    popupNotification.show("Something important happened");
+}
+function onPopup(e) {
+    ping.play(0);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<html>
+<head>
+    <title>Slider</title>
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.default.min.css" rel="stylesheet">
+</head>
+<body>
+<input id="slider" value="0" />
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="http://cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
+<script src="js/blip.js"></script>
+<script>
+var ping, lastPlayedGain = 0,
+    slider = $("#slider").kendoSlider({
+        change: sliderOnChange,
+        slide: sliderOnSlide,
+        min: 0,
+        max: 10,
+        smallStep: 1,
+        largeStep: 2,
+        tickPlacement: "both",
+        enable: false
+    }).data("kendoSlider");
+blip.sampleLoader()
+    .samples({'ping': 'audio/ping.wav'})
+    .done(audioLoaded)
+    .load();
+function audioLoaded() {
+    ping = blip.clip().sample('ping');
+    slider.enable(true);
+}
+    
+function sliderOnSlide(e) {
+    pingGain(e)
+}
+function sliderOnChange(e) {
+    pingGain(e)
+}
+
+function pingGain(e) {
+    var gain;
+    if (e.value > 0) 
+        gain = e.value/10;
+    else
+        gain = 0;
+    console.log(gain);
+    if (lastPlayedGain != gain)
+        ping.play(0,{gain:gain});
+    lastPlayedGain = gain;
+}
+</script>
+</body>
+</html>

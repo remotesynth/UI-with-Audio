@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>Slider</title>
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.default.min.css" rel="stylesheet">
+</head>
+<body>
+<input id="slider" value="0" />
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="http://cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
+<script>
+var ctx = new AudioContext(), lastPlayedGain = 0, freq = 261.63;
+    
+var rangeSlider = $("#slider").kendoSlider({
+        change: sliderOnChange,
+        slide: sliderOnSlide,
+        min: 0,
+        max: 10,
+        smallStep: 1,
+        largeStep: 2,
+        tickPlacement: "both"
+    }).data("kendoSlider");
+    
+function sliderOnSlide(e) {
+    pingGain(e)
+}
+function sliderOnChange(e) {
+    pingGain(e)
+}
+
+function pingGain(e) {
+    var gain, rate = 523.25;
+    if (e.value > 0) 
+        gain = e.value/10;
+    else
+        gain = 0;
+    if (lastPlayedGain != gain)
+        playOsc('triangle',rate,gain,0.05);
+    lastPlayedGain = gain;
+}
+
+function playOsc(type,freq,vol,dur) {
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + dur);
+
+    g.gain.value = vol;
+    g.gain.setValueAtTime(1,ctx.currentTime + dur - 0.01);
+    g.gain.linearRampToValueAtTime(0,ctx.currentTime + dur);
+    o.connect(g);
+    g.connect(ctx.destination);
+}
+</script>
+</body>
+</html>

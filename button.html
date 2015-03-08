@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>Buttons</title>
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.default.min.css" rel="stylesheet">
+</head>
+<body>
+<button id="clickme">Click Me</button>
+<button id="clickme2">No, Click Me!</button>
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="http://cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
+<script src="js/blip.js"></script>
+<script>
+var ctx = new AudioContext(),
+    clickme = $('#clickme').kendoButton({click: playBeep}).data("kendoButton"),
+    clickme2 = $('#clickme2').kendoButton({enable: false, click: playTone}).data("kendoButton");
+
+blip.sampleLoader()
+    .samples({'button': 'audio/button.wav'})
+    .done(audioLoaded)
+    .load();
+
+function audioLoaded() {
+    button = blip.clip().sample('button');
+    
+    clickme2.enable(true);
+}
+
+function playBeep(e) {
+    var o = ctx.createOscillator(), g = ctx.createGain(), playLength = 0.06;
+    o.type = 'sine';
+    o.frequency.value = 261.63;
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + playLength);
+
+    g.gain.value = 0.5;
+    g.gain.setValueAtTime(1,ctx.currentTime + playLength - 0.01);
+    g.gain.linearRampToValueAtTime(0,ctx.currentTime + playLength);
+    o.connect(g);
+    g.connect(ctx.destination);
+}
+
+function playTone(e) {
+    button.play(0);
+}
+</script>
+</body>
+</html>

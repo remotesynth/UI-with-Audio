@@ -1,0 +1,60 @@
+<html>
+<head>
+    <title>Drum Machine</title>
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.default.min.css" rel="stylesheet">
+    <style>
+        .drumbutton {
+            width:20%;
+            height:20%;
+            margin: 0.5%;
+        }
+    </style>
+</head>
+<body>
+<button id="kick" class="drumbutton">Kick</button>
+<button id="snare" class="drumbutton">Snare</button>
+<br>
+<button id="hihat" class="drumbutton">Hi Hat</button>
+<button id="hh_open" class="drumbutton">Open Hi Hat</button>
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="http://cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
+<script src="js/blip.js"></script>
+<script>
+var kick, snare, hihat, hh_open;
+$('#kick').kendoButton({icon: "arrow-e"});
+$('#snare').kendoButton({icon: "arrow-e"});
+$('#hihat').kendoButton({icon: "arrow-e"});
+$('#hh_open').kendoButton({icon: "arrow-e"});
+blip.sampleLoader()
+    .samples({
+    'kick': 'audio/kick.wav',
+    'snare': 'audio/snare.wav',
+    'hihat': 'audio/hihat.wav',
+    'hh_open': 'audio/hh_open.wav'
+    })
+    .done(audioLoaded)
+    .load();
+function audioLoaded() {
+    kick = blip.clip().sample('kick');
+    snare = blip.clip().sample('snare');
+    hihat = blip.clip().sample('hihat');
+    hh_open = blip.clip().sample('hh_open');
+    
+    $('#kick').click(function () {
+        kick.play(0);
+    });
+    $('#snare').click(function () {
+        snare.play(0);
+    });
+    $('#hihat').click(function () {
+        hihat.play(0);
+    });
+    $('#hh_open').click(function () {
+        hh_open.play(0);
+    });
+}
+</script>
+</body>
+</html>

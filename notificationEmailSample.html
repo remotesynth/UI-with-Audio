@@ -1,0 +1,72 @@
+<html>
+<head>
+    <title>Notifications</title>
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.default.min.css" rel="stylesheet">
+    <style>
+        /* Info template */
+        .new-mail {
+            width: 300px;
+            height: 100px;
+            font-size: .9em;
+        }
+        .new-mail h3 {
+            font-size: 1.1em;
+            padding: 25px 10px 5px 0px;
+        }
+        .new-mail img {
+            float: left;
+            margin: 30px 15px 30px 30px;
+        }
+    </style>
+</head>
+<body>
+<span id="emailNotification" style="display:none"></span>
+<button id="messages">Check for Messages</button>
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="http://cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
+<script src="js/blip.js"></script>
+<script id="emailTemplate" type="text/x-kendo-template">
+    <div class="new-mail">
+        <img src="images/envelope.png" />
+        <h3>#= title #</h3>
+        <p>From: #= from #</p>
+    </div>
+</script>
+<script>
+var ping,
+    emailNotification = $("#emailNotification").kendoNotification(
+        {
+            show: onEmailReceived,
+            templates: [{
+                type: "email",
+                template: $("#emailTemplate").html()
+            }]
+        }).data("kendoNotification"),
+    messages = $('#messages').kendoButton({enable: false, click: checkMessages}).data("kendoButton");
+blip.sampleLoader()
+    .samples({
+        'notification': 'audio/notification.wav'
+    })
+    .done(audioLoaded)
+    .load();
+function audioLoaded() {
+    notification = blip.clip().sample('notification');
+    messages.enable(true);
+}
+    
+function checkMessages(e) {
+    $.getJSON( "js/response.js", function(data) {
+            emailNotification.show({
+                title: data.title,
+                from: data.from,
+            }, "email");
+        });
+}
+function onEmailReceived(e) {
+    notification.play(0,{rate:1});
+}
+</script>
+</body>
+</html>

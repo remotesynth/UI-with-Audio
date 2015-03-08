@@ -1,0 +1,83 @@
+<html>
+<head>
+    <title>Drum Machine</title>
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.default.min.css" rel="stylesheet">
+</head>
+<body>
+<button id="start">Start</button>
+<button id="stop">Stop</button>
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="http://cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
+<script src="js/blip.js"></script>
+<script>
+var kick, snare, hihat, hh_open, bassbeat, snarebeat, hhbeat, hhobeat,
+    start = $('#start').kendoButton({icon: "arrow-e", enable: false, click: startPlay}).data("kendoButton"), 
+    stop = $('#stop').kendoButton({icon: "cancel", enable: false, click: stopPlay}).data("kendoButton");
+blip.sampleLoader()
+    .samples({
+    'kick': 'audio/kick.wav',
+    'snare': 'audio/snare.wav',
+    'hihat': 'audio/hihat.wav',
+    'hh_open': 'audio/hh_open.wav'
+    })
+    .done(audioLoaded)
+    .load();
+
+function audioLoaded() {
+    kick = blip.clip().sample('kick');
+    snare = blip.clip().sample('snare');
+    hihat = blip.clip().sample('hihat');
+    hh_open = blip.clip().sample('hh_open');
+    
+    start.enable(true);
+    stop.enable(true);
+}
+
+function startPlay() {
+    var tempo = 120;
+    bassbeat = blip.loop()
+        .tempo(tempo*4)
+        .data([1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0])
+        .tick(function(t,d) {
+            if (d)
+                kick.play(t);
+        });
+    snarebeat = blip.loop()
+        .tempo(tempo)
+        .data([0,1,0,1])
+        .tick(function(t,d) {
+            if (d)
+                snare.play(t);
+        });
+    hhbeat = blip.loop()
+        .tempo(tempo*4)
+        .data([1,1,0,1,1,1,1,0,1,1,1,0,1,1,0,1])
+        .tick(function(t,d) {
+            if (d)
+                hihat.play(t);
+        });
+    hhobeat = blip.loop()
+        .tempo(tempo*4)
+        .data([0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,0])
+        .tick(function(t,d) {
+            if (d)
+                hh_open.play(t);
+        });
+    bassbeat.start();
+    snarebeat.start();
+    hhbeat.start();
+    hhobeat.start();
+}
+
+function stopPlay() {
+    bassbeat.stop();
+    snarebeat.stop();
+    hhbeat.stop();
+    hhobeat.stop();
+}
+    
+</script>
+</body>
+</html>
