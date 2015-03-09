@@ -1,18 +1,15 @@
 <html>
 <head>
     <title>Buttons</title>
-    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.common.min.css" rel="stylesheet">
-    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.default.min.css" rel="stylesheet">
 </head>
 <body>
 <button id="clickme">Click Me</button>
 
-<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
-<script src="http://cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
 <script>
 var ctx = new AudioContext(),
-    clickme = $('#clickme').kendoButton({click: clickHandler}).data("kendoButton");
-
+    clickme = document.getElementById('clickme');
+clickme.addEventListener('click',clickHandler);
+    
 function clickHandler(e) {
     playBeep();
 }
