@@ -3,7 +3,7 @@
     <title>Button</title>
 </head>
 <body>
-<button id="clickme">Click Me!</button>
+<button id="clickme" disabled="true">Click Me!</button>
 
 <script src="js/blip.js"></script>
 <script>
@@ -18,7 +18,7 @@ blip.sampleLoader()
 function audioLoaded() {
     buttonClick = blip.clip().sample('button');
     
-    clickme.enable(true);
+    clickme.disabled = false;
 }
     
 function clickHandler(e) {
