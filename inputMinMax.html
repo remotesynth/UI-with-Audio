@@ -1,0 +1,69 @@
+<html>
+<head>
+    <title>Input with Min/Max</title>
+</head>
+<body>
+<input type="number" name="fakeValue" id="fakeValue" value="0" min="0" max="10">
+<button id="minus" disabled="true">-</button>
+<button id="plus" disabled="true">+</button>
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="js/blip.js"></script>
+<script>
+var lastPlayed = 0;
+blip.sampleLoader()
+    .samples({'button': 'audio/Blip_Error.wav'})
+    .done(audioLoaded)
+    .load();
+
+function audioLoaded() {
+    buttonClick = blip.clip().sample('button');
+    
+    $("#minus").removeAttr("disabled");
+    $("#plus").removeAttr("disabled");
+}
+
+$("#minus").click(function clickHandler(e) {
+    $("#fakeValue").val(function( index, value ) {
+        return Number(value) - 1;
+    });
+    $("#fakeValue").triggerHandler("change");
+});
+    
+$("#plus").click(function clickHandler(e) {
+    $("#fakeValue").val(function( index, value ) {
+        return Number(value) + 1;
+    });
+    $("#fakeValue").triggerHandler("change");
+});
+
+function playTone(ts) {
+    // this is to eliminate duplate plays when click and change are both triggered
+    if (ts > lastPlayed) {
+        buttonClick.play(0);
+        lastPlayed = ts;
+    }
+}
+
+$("#fakeValue").click(function (evt) {
+    // this prevents it from beeping when clicked to edit text (not sure if value is correct beyond Chrome)
+    if (evt.clientX > 35) {
+        $("#fakeValue").triggerHandler("change");
+    }
+});
+
+$("#fakeValue").change(function () {
+    var n = Number($(this).val()), min = Number($(this).attr("min")), max = Number($(this).attr("max"));
+    if (n <= min) {
+        $("#fakeValue").val(min)
+        playTone(Date.now());
+    }
+    else if (n >= max) {
+        $("#fakeValue").val(max)
+        playTone(Date.now());
+    }
+});
+
+</script>
+</body>
+</html>

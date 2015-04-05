@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>Button</title>
+    <link href="js/ladda/ladda.min.css" rel="stylesheet">
+</head>
+<body>
+<button id="clickme" class="ladda-button" data-style="expand-right" data-color="green" disabled="true">
+    <span class="ladda-label">Submit</span>
+</button>
+
+<script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="js/jquery.mockjax.js"></script>
+<script src="js/blip.js"></script>
+<script src="js/ladda/spin.min.js"></script>
+<script src="js/ladda/ladda.js"></script>
+<script>
+var l = Ladda.create(document.querySelector(".ladda-button"));
+var clickme = $("#clickme");
+clickme.click(clickHandler);
+
+$.mockjax({
+    url: "/api/loadstuff",
+    responseTime: 1500,
+    responseText: {
+        data: "I am slow data"
+    }
+});
+
+blip.sampleLoader()
+    .samples({
+        'button': 'audio/button.wav',
+        'success': 'audio/notification-a.wav'
+    })
+    .done(audioLoaded)
+    .load();
+
+function audioLoaded() {
+    buttonClick = blip.clip().sample('button');
+    successAlert = blip.clip().sample('success');
+    clickme.removeAttr("disabled");
+}
+    
+function clickHandler(e) {
+    playButtonTone();
+    l.start();
+    $.getJSON("/api/loadstuff", function(response) {
+        l.stop();
+        successAlert.play(0);
+    });
+}
+
+function playButtonTone() {
+    buttonClick.play(0);
+}
+
+</script>
+</body>
+</html>
