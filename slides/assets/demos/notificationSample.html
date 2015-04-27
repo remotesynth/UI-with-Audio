@@ -1,0 +1,46 @@
+<html>
+<head>
+    <title>Notifications</title>
+    <link href="../kendo/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="../kendo/styles/kendo.default.min.css" rel="stylesheet">
+</head>
+<body>
+<span id="popupNotification" style="display:none"></span>
+<button id="show">Show Notification</button>
+
+<script src="../js/jquery-1.11.2.js"></script>
+<script src="../kendo/js/kendo.all.min.js"></script>
+<script src="../js/blip.js"></script>
+<script>
+var ping,
+    counter = 0,
+    popupNotification = $("#popupNotification").kendoNotification({}).data("kendoNotification"),
+    show = $('#show').kendoButton({enable: false, click: showPopup}).data("kendoButton");
+
+blip.sampleLoader()
+    .samples({
+        'ping': '../audio/ping.wav',
+        'error': '../audio/MESSAGE-B_Decline.wav'
+    })
+    .done(audioLoaded)
+    .load();
+function audioLoaded() {
+    ping = blip.clip().sample('ping');
+    error = blip.clip().sample('error');
+    show.enable(true);
+}
+function showPopup() {
+    counter += 1;
+    if (counter === 1) {
+        popupNotification.show("Something important happened", "info");
+        ping.play(0);
+    }
+    else {
+        counter = 0;
+        popupNotification.show("Something bad happened", "error");
+        error.play(0);
+    }
+}
+</script>
+</body>
+</html>
