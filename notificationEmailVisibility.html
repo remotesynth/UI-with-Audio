@@ -67,17 +67,20 @@ $.mockjax({
 
 blip.sampleLoader()
     .samples({
-        'notification': 'audio/marimba.wav'
+        'notification': 'audio/marimba.wav',
+        'button': 'audio/button.wav'
     })
     .done(audioLoaded)
     .load();
 
 function audioLoaded() {
     notification = blip.clip().sample('notification');
+    buttonClick = blip.clip().sample('button');
     messages.removeAttr("disabled");
 }
     
 function checkMessages(e) {
+    buttonClick.play(0);
     l.start();
     $.getJSON( "/api/loademail", function(data) {
             l.stop();
